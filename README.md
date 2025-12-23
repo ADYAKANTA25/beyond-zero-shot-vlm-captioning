@@ -1,38 +1,265 @@
-# beyond-zero-shot-vlm-captioning
-Code, experiments, and supplementary materials for the paper  "Beyond Zero-Shot: Diversifying Caption Generation in Vision-Language Models via In-Context Learning".
-
-# Beyond Zero-Shot: Diversifying Caption Generation in VLMs via In-Context Learning
+# Beyond Zero-Shot: Diversifying Caption Generation in Vision-Language Models via In-Context Learning
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Framework: PyTorch](https://img.shields.io/badge/Framework-PyTorch-red.svg)](https://pytorch.org/)
+[![Research](https://img.shields.io/badge/Type-Academic%20Research-green.svg)]()
+
+This repository contains the **code, experimental setup, figures, and supplementary materials** for the research paper:
+
+> **Beyond Zero-Shot: Diversifying Caption Generation in VLMs via In-Context Learning with Dynamic Example Selection**
+
+The project focuses on understanding how **Parameter-Efficient Fine-Tuning (PEFT)** and **In-Context Learning (ICL)** interact when applied jointly to large Vision-Language Models (VLMs) for image captioning.
+
+---
 
 ## 📄 Abstract
-Large Vision-Language Models (VLMs) have shown impressive zero-shot capabilities in image captioning; however, the adaptation of these general-purpose models to specific tasks remains a critical challenge. While much of the existing research has focused on **Parameter-Efficient Fine-Tuning (PEFT)** and **In-Context Learning (ICL)** in isolation, the interaction between these strategies when applied concurrently is not well understood.
 
-In this paper, we present a systematic analysis of their combined effects across three representative VLM architectures: **Qwen3-VL**, **Llama 3.2-VL**, and **Qwen2-VL**. Our proposed hybrid framework incorporates QLoRA-based fine-tuning and dynamic few-shot prompting, evaluated on the Flickr30k benchmark.
+Large Vision-Language Models (VLMs) have shown impressive zero-shot capabilities in image captioning; however, adapting these general-purpose models to specific tasks remains a critical challenge. While existing studies often investigate **Parameter-Efficient Fine-Tuning (PEFT)** and **In-Context Learning (ICL)** independently, their combined behavior is not well understood.
 
-**Key Findings:**
-* **Architecture-Dependent Behavior:** Llama 3.2-VL achieves peak performance in zero-shot settings (CIDEr = 1.152) but suffers from *Contextual Interference* when prompted. Conversely, Qwen3-VL acts as a strong meta-learner, where fine-tuning and few-shot prompting complement each other (CIDEr = 1.098).
-* **Accuracy-Diversity Trade-off:** Fine-tuning improves semantic alignment with ground-truth captions but consistently reduces the lexical diversity of generated outputs across all architectures.
+This work presents a **systematic empirical study** of the interaction between fine-tuning and few-shot prompting across three representative VLM architectures: **Qwen2-VL**, **Qwen3-VL**, and **Llama 3.2-VL**. We introduce a hybrid adaptation framework that integrates **QLoRA-based fine-tuning** with **dynamic few-shot prompting**, evaluated on the **Flickr30k** benchmark.
+
+Using both lexical and semantic evaluation metrics (BLEU, CIDEr, RefCLIPScore), we observe **architecture-dependent behaviors**, including contextual interference in Llama 3.2-VL and strong meta-learning effects in Qwen3-VL. Additionally, we identify a consistent **accuracy–diversity trade-off**, where fine-tuning improves semantic alignment but reduces lexical diversity. These findings provide practical guidance for selecting adaptation strategies when deploying VLMs in real-world captioning systems.
+
+---
+
+## 🎯 Key Contributions
+
+- Systematic analysis of **fine-tuning and in-context learning interaction** in VLMs
+- Empirical evidence of **contextual interference** in fine-tuned Llama-based models
+- Identification of **meta-learning behavior** in Qwen3-VL
+- Quantitative study of the **accuracy–diversity trade-off**
+- Lightweight, reproducible adaptation using **QLoRA**
+
+---
+
+## 🧠 Models Evaluated
+
+| Model        | Parameters | Adaptation Settings |
+|--------------|------------|---------------------|
+| Qwen2-VL     | 7B         | Base / Fine-Tuned / Few-Shot |
+| Qwen3-VL     | 8B         | Base / Fine-Tuned / Few-Shot |
+| Llama 3.2-VL | 11B        | Base / Fine-Tuned / Few-Shot |
+
+All models are evaluated under:
+- Zero-shot inference
+- Few-shot inference (K = 3)
+- Consistent nucleus sampling strategy
+
+---
+
+## 📊 Dataset
+
+### Flickr30k
+- 31,783 images
+- 5 human-written captions per image
+- Standard benchmark for image captioning
+
+To ensure fair evaluation:
+- **Support set:** 21,000 images (used for fine-tuning and in-context examples)
+- **Test set:** 100 held-out images (never used during training)
+
+---
 
 ## 📂 Repository Structure
-This repository is organized to facilitate both code replication and manuscript compilation.
 
 ```text
 beyond-zero-shot-vlm-captioning/
 │
-├── main.tex                 # Primary LaTeX source for the manuscript
-├── references.bib           # Bibliography file
-├── doublecol-new.cls        # Journal class file (Required for compilation)
+├── README.md                  # Main documentation (high-level)
+├── requirements.txt           # Python dependencies (for reproducibility)
+├── .gitignore                 # Ignore LaTeX build files, cache, etc.
 │
-├── Fig/                     # High-resolution figures used in the paper
+├── paper/
+│   ├── main.tex               # Main LaTeX manuscript
+│   ├── references.bib         # Bibliography
+│   ├── doublecol-new.cls      # Journal class file
+│
+├── figures/
 │   ├── architecture.png
 │   ├── Combined_Radar_Plots.png
-│   └── ... (Other visualization assets)
+│   ├── bleu_comparison.png
+│   ├── cider_comparison.png
+│   └── ...                    # All figures used in paper
 │
-├── Supplementary/           # Supplementary PDF and additional analyses
+├── supplementary/
+│   ├── Supplementary.pdf      # Final supplementary material
+│   ├── Fig_S1.png
+│   ├── Fig_S2.png
+│   ├── ...
+│   └── Fig_S10.png
 │
-├── requirements.txt         # Python dependencies
-├── README.md                # Project documentation
-└── .gitignore               # Ignored compilation files
+├── experiments/
+│   ├── configs/
+│   │   ├── qlora_qwen2.yaml
+│   │   ├── qlora_qwen3.yaml
+│   │   └── qlora_llama32.yaml
+│   │
+│   ├── prompting/
+│   │   ├── zero_shot.txt
+│   │   └── few_shot_template.txt
+│   │
+│   └── evaluation_protocol.md
+│
+└── LICENSE
+
+
+⚙️ Installation & Environment Setup
+
+This project uses Python 3.10 and PyTorch.
+
+Environment Setup
+python -m venv vlm_env
+source vlm_env/bin/activate
+pip install -r requirements.txt
+
+Hardware Notes
+
+Experiments were conducted on NVIDIA GPUs with at least 40GB VRAM (A100 class).
+All results reported in the paper were obtained using a single GPU with QLoRA-based fine-tuning.
+
+
+✔ Simple  
+✔ Reproducible  
+✔ No over-engineering  
+
+---
+
+### **Step 2: Add “Fine-Tuning Strategy (High-Level)”**
+DO NOT include hyperparameter tables here (already in paper).
+
+📍 Add after Installation
+
+```markdown
+## 🔧 Fine-Tuning Strategy
+
+We adopt **QLoRA-based Parameter-Efficient Fine-Tuning (PEFT)** to adapt large VLMs
+without updating full model weights.
+
+Key characteristics:
+- 4-bit NF4 quantization
+- Low-rank adapters applied to attention and MLP layers
+- Single-epoch fine-tuning
+- No full-parameter updates
+
+Model-specific configurations are provided in:
+experiments/configs/
+
+
+---
+
+### **Step 3: Add “In-Context Learning & Prompting”**
+This is **one of your main contributions** — it must be visible.
+
+📍 Add next
+
+```markdown
+## 🧩 In-Context Learning & Prompting
+
+We evaluate models under both **zero-shot** and **few-shot** prompting settings.
+
+### Few-Shot Prompting
+- Number of in-context examples: **K = 3**
+- Examples sampled from the Flickr30k support set
+- Identical nucleus sampling strategy used across all experiments
+
+Prompt templates are provided in:
+experiments/configs/
+
+
+
+---
+
+### **Step 3: Add “In-Context Learning & Prompting”**
+This is **one of your main contributions** — it must be visible.
+
+📍 Add next
+
+```markdown
+## 🧩 In-Context Learning & Prompting
+
+We evaluate models under both **zero-shot** and **few-shot** prompting settings.
+
+### Few-Shot Prompting
+- Number of in-context examples: **K = 3**
+- Examples sampled from the Flickr30k support set
+- Identical nucleus sampling strategy used across all experiments
+
+Prompt templates are provided in:
+experiments/prompting/
+
+
+
+---
+
+### **Step 4: Add “Evaluation Protocol”**
+Reviewers **expect this**.
+
+📍 Add after Prompting
+
+```markdown
+## 📏 Evaluation Protocol
+
+We evaluate caption quality using a combination of lexical, semantic, and visual grounding metrics:
+
+- **BLEU-1 / BLEU-4**
+- **ROUGE-L**
+- **METEOR**
+- **CIDEr**
+- **BERTScore**
+- **CLIPScore**
+- **RefCLIPScore**
+- **Distinct-1 / Distinct-2**
+
+All metrics are computed on a held-out test set of **100 images**.
+The complete evaluation procedure is described in:
+experiments/evaluation_protocol.md
+
+
+
+---
+
+### **Step 5: Add “Reproducibility Statement”**
+This is **very important for journals**.
+
+📍 Add next
+
+```markdown
+## ♻️ Reproducibility
+
+- All experiments use fixed random seeds
+- Identical decoding parameters across models
+- No test images are used during fine-tuning or prompt construction
+- Configuration files and prompt templates are publicly released
+
+Due to licensing and size constraints, model checkpoints and datasets are not redistributed.
+
+
+## 📚 Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@article{beyond_zeroshot_vlm,
+  title     = {Beyond Zero-Shot: Diversifying Caption Generation in Vision-Language Models via In-Context Learning},
+  author    = {Sahoo, Adyakanta},
+  journal   = {Under Review},
+  year      = {2025}
+}
+
+
+---
+
+### **Step 7: Add “License & Disclaimer”**
+Final section.
+
+```markdown
+## 📜 License
+
+This project is released under the **MIT License**.
+See `LICENSE` for details.
+
+## ⚠️ Disclaimer
+
+This repository is intended for **research and academic use only**.
+The results and conclusions presented reflect controlled experimental settings.

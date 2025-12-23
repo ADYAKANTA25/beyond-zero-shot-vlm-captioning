@@ -1,0 +1,17 @@
+SYSTEM: You are an assistant that writes descriptive captions for images.
+
+# Example 1
+USER: <Image1>
+ASSISTANT: <Caption1>
+
+# Example 2
+USER: <Image2>
+ASSISTANT: <Caption2>
+
+# Example 3
+USER: <Image3>
+ASSISTANT: <Caption3>
+
+# Query
+USER: <Query Image>
+ASSISTANT: Write a descriptive caption for this image.

@@ -63,7 +63,7 @@ To ensure fair evaluation:
 
 ## 📂 Repository Structure
 
-```text
+```
 beyond-zero-shot-vlm-captioning/
 │
 ├── README.md                  # Main documentation (high-level)
@@ -104,13 +104,20 @@ beyond-zero-shot-vlm-captioning/
 └── LICENSE
 
 
+```
+
+
 ⚙️ Installation & Environment Setup
 
 This project uses Python 3.10 and PyTorch.
 
-Environment Setup
+Environment Setup:
+
+
 python -m venv vlm_env
+
 source vlm_env/bin/activate
+
 pip install -r requirements.txt
 
 Hardware Notes
@@ -123,123 +130,95 @@ All results reported in the paper were obtained using a single GPU with QLoRA-ba
 ✔ Reproducible  
 ✔ No over-engineering  
 
+
 ---
 
-### **Step 2: Add “Fine-Tuning Strategy (High-Level)”**
-DO NOT include hyperparameter tables here (already in paper).
+🔧 Fine-Tuning Strategy
 
-📍 Add after Installation
-
-```markdown
-## 🔧 Fine-Tuning Strategy
-
-We adopt **QLoRA-based Parameter-Efficient Fine-Tuning (PEFT)** to adapt large VLMs
-without updating full model weights.
+We employ QLoRA-based Parameter-Efficient Fine-Tuning to adapt VLMs without updating full model weights.
 
 Key characteristics:
-- 4-bit NF4 quantization
-- Low-rank adapters applied to attention and MLP layers
-- Single-epoch fine-tuning
-- No full-parameter updates
+
+
+
+4-bit NF4 quantization
+Low-rank adapters applied to attention and MLP layers
+Single-epoch fine-tuning
+No full-parameter updates
 
 Model-specific configurations are provided in:
-experiments/configs/
+ experiments/configs/
 
 
 ---
 
-### **Step 3: Add “In-Context Learning & Prompting”**
-This is **one of your main contributions** — it must be visible.
+🧩 In-Context Learning & Prompting
 
-📍 Add next
+Models are evaluated under both zero-shot and few-shot prompting.
 
-```markdown
-## 🧩 In-Context Learning & Prompting
+Few-Shot Prompting
 
-We evaluate models under both **zero-shot** and **few-shot** prompting settings.
+Number of in-context examples: K = 3
 
-### Few-Shot Prompting
-- Number of in-context examples: **K = 3**
-- Examples sampled from the Flickr30k support set
-- Identical nucleus sampling strategy used across all experiments
+Examples sampled from the Flickr30k support set
 
-Prompt templates are provided in:
-experiments/configs/
+Identical nucleus sampling strategy used across all experiments
 
+Prompt templates are available in:
+ experiments/prompting/
+
+Dynamic example selection is used to reduce prompt bias and contextual redundancy.
 
 
 ---
 
-### **Step 3: Add “In-Context Learning & Prompting”**
-This is **one of your main contributions** — it must be visible.
+📏 Evaluation Protocol
 
-📍 Add next
+Caption quality is evaluated using lexical, semantic, and visual grounding metrics:
 
-```markdown
-## 🧩 In-Context Learning & Prompting
+BLEU-1 / BLEU-4
 
-We evaluate models under both **zero-shot** and **few-shot** prompting settings.
+ROUGE-L
 
-### Few-Shot Prompting
-- Number of in-context examples: **K = 3**
-- Examples sampled from the Flickr30k support set
-- Identical nucleus sampling strategy used across all experiments
+METEOR
 
-Prompt templates are provided in:
-experiments/prompting/
+CIDEr
 
+BERTScore
 
+CLIPScore
 
----
+RefCLIPScore
 
-### **Step 4: Add “Evaluation Protocol”**
-Reviewers **expect this**.
+Distinct-1 / Distinct-2
 
-📍 Add after Prompting
+All metrics are computed on the held-out test set.
 
-```markdown
-## 📏 Evaluation Protocol
-
-We evaluate caption quality using a combination of lexical, semantic, and visual grounding metrics:
-
-- **BLEU-1 / BLEU-4**
-- **ROUGE-L**
-- **METEOR**
-- **CIDEr**
-- **BERTScore**
-- **CLIPScore**
-- **RefCLIPScore**
-- **Distinct-1 / Distinct-2**
-
-All metrics are computed on a held-out test set of **100 images**.
-The complete evaluation procedure is described in:
+Detailed evaluation procedures are documented in:
 experiments/evaluation_protocol.md
 
 
+---
+
+♻️ Reproducibility
+
+Fixed random seeds across runs
+
+Identical decoding parameters for all models
+
+No test images used during fine-tuning or prompt construction
+
+Configuration files and prompt templates are fully released
+
+Due to licensing and storage constraints, datasets and model checkpoints are not redistributed.
+
 
 ---
 
-### **Step 5: Add “Reproducibility Statement”**
-This is **very important for journals**.
-
-📍 Add next
-
-```markdown
-## ♻️ Reproducibility
-
-- All experiments use fixed random seeds
-- Identical decoding parameters across models
-- No test images are used during fine-tuning or prompt construction
-- Configuration files and prompt templates are publicly released
-
-Due to licensing and size constraints, model checkpoints and datasets are not redistributed.
+📚 Citation
 
 
-## 📚 Citation
 
-If you find this work useful, please cite:
-
-```bibtex
 @article{beyond_zeroshot_vlm,
   title     = {Beyond Zero-Shot: Diversifying Caption Generation in Vision-Language Models via In-Context Learning},
   author    = {Sahoo, Adyakanta},
@@ -247,19 +226,17 @@ If you find this work useful, please cite:
   year      = {2025}
 }
 
+---
+
+
+📜 License
+This project is released under the MIT License.
+See the LICENSE file for details.
 
 ---
 
-### **Step 7: Add “License & Disclaimer”**
-Final section.
+⚠️ Disclaimer
 
-```markdown
-## 📜 License
+This repository is intended for academic and research purposes only.
+The reported results reflect controlled experimental settings and may not directly generalize to all deployment scenarios.
 
-This project is released under the **MIT License**.
-See `LICENSE` for details.
-
-## ⚠️ Disclaimer
-
-This repository is intended for **research and academic use only**.
-The results and conclusions presented reflect controlled experimental settings.
